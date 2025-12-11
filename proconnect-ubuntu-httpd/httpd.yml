@@ -1,7 +1,18 @@
 ---
 - name: Install Apache HTTP Server (httpd) on Ubuntu
-  hosts: all  # Replace with your target hosts or group name
+  hosts: all
+  gather_facts: no  # Disable facts so the playbook can run
   tasks:
+
+    - name: Ensure python3 and python3-six are installed
+      raw: |
+        sudo apt update -y
+        sudo apt install -y python3 python3-pip python3-six || sudo pip3 install six
+      changed_when: false
+
+    - name: Gather facts manually after fixing Python
+      setup:
+
     - name: Update the System Packages
       apt:
         update_cache: yes
@@ -18,4 +29,3 @@
         state: started
         enabled: yes
         daemon_reload: yes
-
